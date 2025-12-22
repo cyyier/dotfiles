@@ -1,0 +1,18 @@
+# only interactive
+[[ -o interactive ]] || return
+
+source ~/dotfiles/shell/aliases.sh
+source ~/dotfiles/shell/prompt.sh
+
+echo "🐭 Welcome back, soso~"
+
+# colors (zsh style)
+autoload -U colors && colors
+
+PINK="%F{218}"
+BLUE="%F{110}"
+GRAY="%F{245}"
+RESET="%f"
+
+PROMPT="${PINK}♡ ${BLUE}%n@%m ${GRAY}%~${PINK} \$(git_branch)${RESET}
+$ "

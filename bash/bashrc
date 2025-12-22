@@ -1,0 +1,27 @@
+# only interactive
+[[ $- != *i* ]] && return
+
+source ~/dotfiles/shell/aliases.sh
+source ~/dotfiles/shell/prompt.sh
+
+echo "🐭 Welcome back, soso~"
+
+# colors (bash style)
+RESET="\[\e[0m\]"
+PINK="\[\e[38;5;218m\]"
+BLUE="\[\e[38;5;110m\]"
+GRAY="\[\e[38;5;245m\]"
+
+# history
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+
+set -o noclobber
+set -o notify
+
+PS1="${PINK}♡ ${BLUE}\u@\h ${GRAY}\w${PINK} \$(git_branch)${RESET}\n$ "
+
+
+
