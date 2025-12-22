@@ -21,7 +21,13 @@ shopt -s histappend
 set -o noclobber
 set -o notify
 
-PS1="${PINK}♡ ${BLUE}\u@\h ${GRAY}\w${PINK} \$(git_branch)${RESET}\n$ "
+git_branch() {
+  git branch 2>/dev/null | sed -n '/\* /s///p'
+}
+
+set_prompt() {
+  PS1="${PINK}♡ ${BLUE}\u@\h ${GRAY}\w ${PINK}$(git_branch)${RESET}\n$ "
+}
 
 
-
+PROMPT_COMMAND=set_prompt

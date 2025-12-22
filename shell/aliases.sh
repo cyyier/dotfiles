@@ -19,7 +19,6 @@ alias gb='git branch'
 # navigation
 alias ..='cd ..'
 alias ...='cd ../..'
-alias -='-'
 
 # misc
 alias cls='clear'
