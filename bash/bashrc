@@ -11,6 +11,7 @@ RESET="\[\e[0m\]"
 PINK="\[\e[38;5;218m\]"
 BLUE="\[\e[38;5;110m\]"
 GRAY="\[\e[38;5;245m\]"
+PURPLE="\[\e[38;5;160m\]"
 
 # history
 export HISTSIZE=10000
@@ -26,7 +27,7 @@ git_branch() {
 }
 
 set_prompt() {
-  PS1="${PINK}♡ ${BLUE}\u@\h ${GRAY}\w ${PINK}$(git_branch)${RESET}\n$ "
+  PS1="${PINK}♡ ${BLUE}\u@\h ${GRAY}\w ${PINK}$(git_branch)${RESET}\n${PINK}❯${PURPLE}❯${BLUE}❯${RESET} "
 }
 
 

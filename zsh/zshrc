@@ -11,11 +11,13 @@ autoload -U colors && colors
 PINK="%F{218}"
 BLUE="%F{110}"
 GRAY="%F{245}"
+PURPLE="%F{160}"
+
 RESET="%f"
 
 set_prompt() {
   PROMPT="${PINK}♡ ${BLUE}%n@%m ${GRAY}%~ ${PINK}$(git_branch)${RESET}
-$ "
+${PINK}❯${PURPLE}❯${BLUE}❯${RESET} "
 }
 
 precmd() {
