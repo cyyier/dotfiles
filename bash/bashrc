@@ -4,7 +4,6 @@
 source ~/dotfiles/shell/aliases.sh
 source ~/dotfiles/shell/prompt.sh
 
-echo "🐭 Welcome back, soso~"
 
 # colors (bash style)
 RESET="\[\e[0m\]"
@@ -12,6 +11,15 @@ PINK="\[\e[38;5;218m\]"
 BLUE="\[\e[38;5;110m\]"
 GRAY="\[\e[38;5;245m\]"
 PURPLE="\[\e[38;5;177m\]"
+
+ECHO_PINK="\e[38;5;218m"
+ECHO_RESET="\e[0m"
+
+echo
+echo -e "  ✧( •̀ ω •́ )      ( •̀ ω •́ )✧"
+echo -e "  ───────────────────────────"
+echo -e "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
+echo
 
 # history
 export HISTSIZE=10000

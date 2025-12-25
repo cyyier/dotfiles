@@ -4,8 +4,6 @@
 source ~/dotfiles/shell/aliases.sh
 source ~/dotfiles/shell/prompt.sh
 
-echo "🐭 Welcome back, soso~"
-
 autoload -U colors && colors
 
 PINK="%F{218}"
@@ -14,6 +12,15 @@ GRAY="%F{245}"
 PURPLE="%F{177}"
 
 RESET="%f"
+
+ECHO_PINK="\e[38;5;218m"
+ECHO_RESET="\e[0m"
+
+print
+print "  ✧( •̀ ω •́ )      ( •̀ ω •́ )✧"
+print "  ───────────────────────────"
+print -p "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
+print
 
 set_prompt() {
   PROMPT="${PINK}💗 ${BLUE}%n@%m ${GRAY}%~ ${PINK}$(git_branch)${RESET}
