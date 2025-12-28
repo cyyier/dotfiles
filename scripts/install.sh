@@ -5,13 +5,19 @@ echo "🐭 Installing dotfiles for soso..."
 
 DOTFILES="$HOME/dotfiles"
 
+# tmux
+if [ -f "$DOTFILES/tmux/tmux.conf" ]; then
+  echo "→ tmux detected"
+  ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
+fi
+
 # bash
 if [ -f "$HOME/.bashrc" ]; then
   echo "→ bash detected"
   ln -sf "$DOTFILES/bash/bashrc" "$HOME/.bashrc"
 fi
 
-# zsh (macOS default)
+# zsh
 if [ -f "$HOME/.zshrc" ] || [ "$SHELL" = "/bin/zsh" ]; then
   echo "→ zsh detected"
   ln -sf "$DOTFILES/zsh/zshrc" "$HOME/.zshrc"
