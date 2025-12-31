@@ -23,4 +23,10 @@ if [ -f "$HOME/.zshrc" ] || [ "$SHELL" = "/bin/zsh" ]; then
   ln -sf "$DOTFILES/zsh/zshrc" "$HOME/.zshrc"
 fi
 
+# cheats
+if [ -f "$DOTFILES/cheats/my_cheats" ]; then
+  echo "→ cheats detected"
+  ln -sf "$DOTFILES/cheats/my_cheats" "$HOME/.my_cheats"
+fi
+
 echo "✨ Done! Restart your terminal."

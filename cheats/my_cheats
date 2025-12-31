@@ -1,0 +1,51 @@
+# @fs    | alias rm='rm -i'             | Remove with confirmation
+# @fs    | alias cp='cp -i'             | Copy with confirmation
+# @fs    | alias mv='mv -i'             | Move with confirmation
+# @fs    | alias mkdir='mkdir -p'       | Recursive mkdir
+# @ls    | alias ll='ls -alF'           | List all files with details
+# @ls    | alias la='ls -A'             | List all except . and ..
+# @ls    | alias l='ls -CF'             | Column view
+# @nav   | alias ..='cd ..'             | Go up 1 level
+# @nav   | alias ...='cd ../..'         | Go up 2 levels
+# @shell | cls                          | Clear screen
+# @shell | h                            | Command history
+# @shell | j                            | Show background jobs
+# @shell | 2>/dev/null                  | Silence stderr
+# @proc  | pgrep -af <name>             | Find PID and full command
+# @proc  | pkill -f "pattern"           | Kill by process pattern
+# @proc  | kill -0 <PID>                | Check if PID exists
+# @git   | gs | git status              | Show repo status
+# @git   | ga | git add .               | Stage all changes
+# @git   | gc | git commit -m "msg"     | Commit with message
+# @git   | gco | git checkout           | Switch branches
+# @git   | gl | git log --oneline --graph --decorate | Visual log
+# @git   | gb | git branch              | List branches
+# @git   | git remote -v                | Show remote URLs
+# @git   | git remote show origin       | Detailed remote info
+# @git   | git fetch --all --prune      | Sync and clean stale branches
+# @ssh   | ssh -p <port> user@host      | Login with custom port
+# @ssh   | ssh -L <L_port>:127.0.0.1:<R_port> | Local port forward
+# @ssh   | ssh -f -N -L ...             | Background SSH tunnel
+# @py    | python3 -m http.server 8888  | One-liner HTTP server
+# @vim   | /word                        | Search forward
+# @vim   | n / N                        | Next / Previous match
+# @vim   | :noh                         | Clear search highlight
+# @tmux  | tmux ls                      | List sessions
+# @tmux  | tmux attach -t <name>        | Attach to session
+# @tmux  | Ctrl-b d                     | Detach session
+# @tmux  | Ctrl-b %  /  "               | Split V / H
+# @tmux  | Ctrl-b arrows                | Navigate panes
+# @tmux  | Ctrl-b c                     | New window
+# @tmux  | Ctrl-b ,                     | Rename window
+# @grep  | grep -rin "pattern" .        | Recursive case-insensitive search
+# @grep  | grep -v "pattern"            | Inverse match (exclude)
+# @docker| docker ps -a                 | List all containers
+# @docker| docker exec -it <id> bash    | Enter container shell
+# @docker| docker logs -f --tail 100 <id>| Tail container logs
+# @docker| docker system prune -a       | Remove unused data
+# @sysd  | systemctl status <name>      | Check service status
+# @sysd  | sudo systemctl restart <name>| Restart service
+# @sysd  | journalctl -u <name> -f      | Follow service logs
+# @net   | lsof -i :<port>              | Find process on port
+# @net   | netstat -tulnp               | List listening ports
+# @net   | curl -I <url>                | Show HTTP headers only

@@ -27,3 +27,22 @@ alias cls='clear'
 alias mkdir='mkdir -p'
 alias h='history'
 alias j='jobs'
+
+# --- Search Utils ---
+
+# [??] Interactive Search (The soul search)
+alias "??"="cat ~/.my_cheats | fzf --height 40% --layout=reverse --border --prompt='🤔 How to: '"
+
+# [qs] Quick Search
+qs() {
+    grep -i "@$1" ~/.my_cheats
+}
+
+# [note] Quick Record (No quotes needed)
+note() {
+    echo "# @$*" >> ~/.my_cheats
+    echo "✅ Knowledge captured: $*"
+}
+
+# [qe] Quick Edit
+alias qe="vim ~/.my_cheats"
