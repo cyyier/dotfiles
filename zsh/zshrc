@@ -19,7 +19,7 @@ ECHO_RESET="\e[0m"
 print
 print "  ✧( •̀ ω •́ )      ( •̀ ω •́ )✧"
 print "  ───────────────────────────"
-print -p "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
+print "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
 print
 
 set_prompt() {
