@@ -23,8 +23,14 @@ print "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
 print
 
 set_prompt() {
-  PROMPT="${PINK}💗 ${BLUE}%n@%m ${GRAY}%~ ${PINK}$(git_branch)${RESET}
-${PINK}❯${PURPLE}❯${BLUE}❯${RESET} "
+  local p_pink="%{$PINK%}"
+  local p_blue="%{$BLUE%}"
+  local p_gray="%{$GRAY%}"
+  local p_purple="%{$PURPLE%}"
+  local p_reset="%{$RESET%}"
+
+  PROMPT="${p_pink}💗 ${p_blue}%n@%m ${p_gray}%~ ${branch_info}${p_reset}
+${p_pink}❯${p_purple}❯${p_blue}❯${p_reset} "
 }
 
 precmd() {
