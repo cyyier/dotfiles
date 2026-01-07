@@ -1,3 +1,5 @@
+# --- Standard Aliases ---
+
 # safer defaults
 alias rm='rm -i'
 alias cp='cp -i'
@@ -46,3 +48,9 @@ note() {
 
 # [qe] Quick Edit
 alias qe="vim ~/.my_cheats"
+
+# --- Suffix Aliases (Zsh Only) ---
+if [[ -n "$ZSH_VERSION" ]]; then
+    alias -s {py,js,sh,txt}='vim'  
+    alias -s {png,jpg,pdf}='xdg-open' 
+fi
