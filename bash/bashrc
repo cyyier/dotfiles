@@ -1,6 +1,11 @@
 # only interactive
 [[ $- != *i* ]] && return
 
+# Auto-switch to Zsh if available and interactive
+if [[ -t 0 && -x $(command -v zsh) && $(ps -p $$ -o comm=) != "zsh" ]]; then
+    exec zsh
+fi
+
 source ~/dotfiles/shell/aliases.sh
 source ~/dotfiles/shell/prompt.sh
 

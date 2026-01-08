@@ -1,86 +1,97 @@
 #!/usr/bin/env bash
 set -e
 
-echo "🐭 Installing dotfiles for soso..."
+# Define colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}🐭 Initializing dotfiles for soso...${NC}"
 
 DOTFILES="$HOME/dotfiles"
+BIN_DIR="$HOME/.local/bin"
+mkdir -p "$BIN_DIR"
 
 # --- 1. Environment Check ---
 
-# Check if Zsh is installed
+HAS_ZSH=false
 if command -v zsh >/dev/null 2>&1; then
     HAS_ZSH=true
-    echo "✅ Zsh is available"
+    echo -e "${GREEN}✅ Zsh is available${NC}"
 else
-    # Attempt to install Zsh if on Debian/Ubuntu and running as root
-    if command -v apt >/dev/null 2>&1 && [ "$EUID" -eq 0 ]; then
-        echo "→ Attempting to install Zsh..."
-        apt update && apt install -y zsh
-        HAS_ZSH=true
-    else
-        HAS_ZSH=false
-        echo "⚠️  Zsh not found and cannot be installed. Falling back to Bash."
+    echo -e "${YELLOW}⚠️  Zsh not found. Please install it via your package manager if possible.${NC}"
+fi
+
+# --- 2. Symbolic Links ---
+
+echo -e "${BLUE}→ Creating symlinks...${NC}"
+
+# Ensure config directories exist
+mkdir -p "$HOME/.config/navi"
+
+# Config mapping: source_path destination_path
+declare -A LINKS=(
+    ["$DOTFILES/tmux/tmux.conf"]="$HOME/.tmux.conf"
+    ["$DOTFILES/bash/bashrc"]="$HOME/.bashrc"
+    ["$DOTFILES/zsh/zshrc"]="$HOME/.zshrc"
+    ["$DOTFILES/zsh/p10k.zsh"]="$HOME/.p10k.zsh"
+    ["$DOTFILES/navi/config.yaml"]="$HOME/.config/navi/config.yaml"
+    ["$DOTFILES/cheats/my_cheats"]="$HOME/.my_cheats"
+)
+
+for src in "${!LINKS[@]}"; do
+    if [ -f "$src" ]; then
+        ln -sf "$src" "${LINKS[$src]}"
+        echo "  linked $(basename "$src")"
     fi
-fi
+done
 
-# --- 2. Create Symbolic Links ---
+# --- 3. Zsh Environment Setup (Non-interactive) ---
 
-# tmux configuration
-if [ -f "$DOTFILES/tmux/tmux.conf" ]; then
-  echo "→ Linking tmux config"
-  ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
-fi
-
-# Bash configuration (linked as a fallback shell)
-if [ -d "$DOTFILES/bash" ]; then
-  echo "→ Linking bash config"
-  ln -sf "$DOTFILES/bash/bashrc" "$HOME/.bashrc"
-fi
-
-# Zsh setup
 if [ "$HAS_ZSH" = true ]; then
-    echo "🚀 Setting up Zsh environment..."
-    
-    # Link Zsh and Powerlevel10k configurations
-    ln -sf "$DOTFILES/zsh/zshrc" "$HOME/.zshrc"
-    if [ -f "$DOTFILES/zsh/p10k.zsh" ]; then
-        ln -sf "$DOTFILES/zsh/p10k.zsh" "$HOME/.p10k.zsh"
-    fi
-
-    # Install Oh My Zsh if not already present
-    if [ ! -d "$HOME/.oh-my-zsh" ]; then
-        echo "→ Installing Oh My Zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    fi
-
-    # Install Powerlevel10k theme
     ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-    if [ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
-        echo "→ Installing Powerlevel10k theme..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
+    
+    # Install Oh My Zsh if missing (Manual clone to avoid overwriting .zshrc)
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        echo -e "${BLUE}→ Cloning Oh My Zsh...${NC}"
+        git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
     fi
 
-    # Install Zsh plugins (Autosuggestions & Syntax Highlighting)
-    if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-        echo "→ Downloading zsh-autosuggestions..."
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-    fi
-    if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-        echo "→ Downloading zsh-syntax-highlighting..."
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-    fi
-
-    # Attempt to change default shell to Zsh
-    if [ "$SHELL" != "$(command -v zsh)" ]; then
-        echo "→ Changing default shell to zsh..."
-        chsh -s "$(command -v zsh)" || echo "⚠️  Warning: Failed to change default shell automatically."
-    fi
+    # Install Plugins & Themes
+    [[ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]] && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
+    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]] && git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]] && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# Cheat sheets
-if [ -f "$DOTFILES/cheats/my_cheats" ]; then
-  echo "→ Linking cheat sheets"
-  ln -sf "$DOTFILES/cheats/my_cheats" "$HOME/.my_cheats"
+# --- 4. Modern Tools (Binary Installation to ~/.local/bin) ---
+
+echo -e "${BLUE}→ Installing CLI tools...${NC}"
+
+# fzf: The Fuzzy Finder
+if [ ! -d "$HOME/.fzf" ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    "$HOME/.fzf/install" --bin --no-update-rc
+    ln -sf "$HOME/.fzf/bin/fzf" "$BIN_DIR/fzf"
 fi
 
-echo "✨ Done! Please restart your terminal or type 'zsh' to enjoy."
+# navi: Interactive Cheat Sheet
+if ! command -v navi >/dev/null 2>&1; then
+    echo "  installing navi..."
+    curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install | BIN_DIR="$BIN_DIR" bash
+fi
+
+# tealdeer: Fast tldr client
+if ! command -v tldr >/dev/null 2>&1; then
+    echo "  installing tldr (tealdeer)..."
+    # Detect OS for binary download (Linux/macOS)
+    OS_TYPE=$(uname -s | tr '[:upper:]' '[:lower:]')
+    curl -L "https://github.com/dbrgn/tealdeer/releases/latest/download/tealdeer-$OS_TYPE-x86_64-musl" -o "$BIN_DIR/tldr"
+    chmod +x "$BIN_DIR/tldr"
+    "$BIN_DIR/tldr" --update || true
+fi
+
+echo -e "${GREEN}✨ Done!${NC}"
+echo -e "${YELLOW}Final Step:${NC} Ensure ${BLUE}$BIN_DIR${NC} is in your PATH."
+echo "Add this to your .bashrc or .zshrc:"
+echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
