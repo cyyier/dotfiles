@@ -1,91 +1,94 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # --- 1. Global Settings ---
-# Use the custom macaron palette defined below
-palette = "macaron"
+# Use the professional soso_theme palette
+palette = "soso_theme"
 
 # --- 2. Dynamic Layout ---
-# Use curly braces ${...} to avoid parsing ambiguity
+# Only includes Google core tech stack with strict Powerline segment logic
 format = """
-[](color_sakura)\
+[](color_pink)\
 ${custom.env_tag}\
-[](fg:color_sakura bg:color_mint)\
+[](fg:color_pink bg:color_blue)\
 $directory\
-[](fg:color_mint bg:color_peach)\
+[](fg:color_blue bg:color_purple)\
 $git_branch\
 $git_status\
-[](fg:color_peach bg:color_lavender)\
+[](fg:color_purple bg:color_gray)\
 $cpp\
 $java\
 $python\
 $golang\
 $rust\
 $nodejs\
-[](fg:color_lavender)\
+[](fg:color_gray)\
 \n$character"""
 
-# --- 3. Macaron Palette Definitions ---
-[palettes.macaron]
-color_sakura = "#F4C2C2"   # Environment Tag
-color_mint = "#B2E2D4"     # Directory Path
-color_peach = "#FCE1B6"    # Git Status
-color_lavender = "#E6E6FA" # Google Tech Stack
-color_text = "#4A4A4A"     # Soft gray for readability
+# --- 3. Custom Color Palette (Your favorites) ---
+[palettes.soso_theme]
+color_pink = "#FFAFAF"     # ANSI 218: Pink
+color_blue = "#87AFD7"     # ANSI 110: Blue
+color_purple = "#D787FF"   # ANSI 177: Purple
+color_gray = "#8A8A8A"     # ANSI 245: Gray
+color_text = "#303030"     # Dark gray for text readability
 
 # --- 4. Base Modules ---
 [custom.env_tag]
-# Use 'command' to fetch the ENV_TYPE set in your zshrc
+# This dynamically displays the environment set in your zshrc
 command = "echo $ENV_TYPE" 
 when = "true"
-style = "bg:color_sakura fg:color_text"
+style = "bg:color_pink fg:color_text"
 format = "[ $output ]($style)"
 
 [directory]
-style = "bg:color_mint fg:color_text"
+style = "bg:color_blue fg:color_text"
 format = "[ $path ]($style)"
 truncation_length = 3
 
 [git_branch]
 symbol = " "
-style = "bg:color_peach fg:color_text"
+style = "bg:color_purple fg:color_text"
 format = "[[ $symbol$branch ]($style)]($style)"
 
 [git_status]
-style = "bg:color_peach fg:color_text"
+style = "bg:color_purple fg:color_text"
 format = "[[($all_status$ahead_behind )]($style)]($style)"
 
-# --- 5. Google Tech Stack (Shared Lavender Background) ---
+# --- 5. Google Core Language Modules (Shared Gray Background) ---
+# Using Gray (ANSI 245) for tech stack to keep it professional
 [cpp]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [java]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [python]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [golang]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [rust]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [nodejs]
 symbol = " "
-style = "bg:color_lavender fg:color_text"
+style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
-# --- 6. Prompt Character ---
+# --- 6. Prompt Character (Triple Gradient Arrows) ---
 [character]
-success_symbol = "[✨](bold #F8D6B3)"
-error_symbol = "[❌](bold #FFB7B2)"
+# Success: Pink, Blue, Purple gradient arrows
+success_symbol = "[❯](bold color_pink)[❯](bold color_blue)[❯](bold color_purple)" 
+# Error: Triple gray arrows to indicate failure
+error_symbol = "[❯](bold color_gray)[❯](bold color_gray)[❯](bold color_gray)"
