@@ -1,16 +1,86 @@
-# Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Inserts a blank line between shell prompts
-add_newline = true
-
-# Use custom format
+# --- 1. Dynamic Layout ---
+# Only includes Google core tech stack with strict Powerline segment logic
 format = """
-[  Company SWE Environment ](bold blue) 
-$directory$git_branch$git_status
-[➜](bold green) """
+[](color_sakura)\
+$custom[env_tag]\
+[](fg:color_sakura bg:color_mint)\
+$directory\
+[](fg:color_mint bg:color_peach)\
+$git_branch\
+$git_status\
+[](fg:color_peach bg:color_lavender)\
+$cpp\
+$java\
+$python\
+$golang\
+$rust\
+$nodejs\
+[](fg:color_lavender)\
+\n$character"""
+
+# --- 2. Macaron Palette Definitions ---
+[palette]
+color_sakura = "#F4C2C2"   # Environment Tag
+color_mint = "#B2E2D4"     # Directory Path
+color_peach = "#FCE1B6"    # Git Status
+color_lavender = "#E6E6FA" # Google Tech Stack
+color_text = "#4A4A4A"     # Soft gray for better readability
+
+# --- 3. Base Modules ---
+[custom.env_tag]
+variable = "ENV_TYPE"
+default = "🌸 gReach"
+style = "bg:color_sakura fg:color_text"
+format = "[ $output ]($style)"
+when = "true"
 
 [directory]
-style = "bold cyan"
-truncation_length = 3
-fish_style_pwd_dir_length = 1
+style = "bg:color_mint fg:color_text"
+format = "[ $path ]($style)"
+
+[git_branch]
+symbol = " "
+style = "bg:color_peach fg:color_text"
+format = "[[ $symbol$branch ]($style)]($style)"
+
+[git_status]
+style = "bg:color_peach fg:color_text"
+format = "[[($all_status$ahead_behind )]($style)]($style)"
+
+# --- 4. Google Core Language Modules (Shared Lavender Background) ---
+[cpp]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+[java]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+[python]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+[golang]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+[rust]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+[nodejs]
+symbol = " "
+style = "bg:color_lavender fg:color_text"
+format = '[ $symbol ($version) ]($style)'
+
+# --- 5. Character Symbols ---
+[character]
+success_symbol = "[✨](bold #F8D6B3)"
+error_symbol = "[❌](bold #FFB7B2)"
