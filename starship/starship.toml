@@ -1,14 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # --- 1. Global Settings ---
-# Explicitly tell starship to use the custom palette defined below
+# Use the custom macaron palette defined below
 palette = "macaron"
 
 # --- 2. Dynamic Layout ---
-# Strictly ordered segments for a seamless Powerline look
+# Use curly braces ${...} to avoid parsing ambiguity
 format = """
 [](color_sakura)\
-$custom[env_tag]\
+${custom.env_tag}\
 [](fg:color_sakura bg:color_mint)\
 $directory\
 [](fg:color_mint bg:color_peach)\
@@ -26,15 +26,15 @@ $nodejs\
 
 # --- 3. Macaron Palette Definitions ---
 [palettes.macaron]
-color_sakura = "#F4C2C2"   # Sakura Pink (Environment)
-color_mint = "#B2E2D4"     # Mint Green (Directory)
-color_peach = "#FCE1B6"    # Peach (Git)
-color_lavender = "#E6E6FA" # Lavender (Tech Stack)
-color_text = "#4A4A4A"     # Soft Gray text
+color_sakura = "#F4C2C2"   # Environment Tag
+color_mint = "#B2E2D4"     # Directory Path
+color_peach = "#FCE1B6"    # Git Status
+color_lavender = "#E6E6FA" # Google Tech Stack
+color_text = "#4A4A4A"     # Soft gray for readability
 
 # --- 4. Base Modules ---
 [custom.env_tag]
-# This dynamically displays the environment set in your zshrc
+# Use 'command' to fetch the ENV_TYPE set in your zshrc
 command = "echo $ENV_TYPE" 
 when = "true"
 style = "bg:color_sakura fg:color_text"
@@ -85,7 +85,7 @@ symbol = " "
 style = "bg:color_lavender fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
-# --- 6. Character Symbols ---
+# --- 6. Prompt Character ---
 [character]
 success_symbol = "[✨](bold #F8D6B3)"
 error_symbol = "[❌](bold #FFB7B2)"
