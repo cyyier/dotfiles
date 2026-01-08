@@ -4,7 +4,7 @@
 palette = "soso_theme"
 
 # --- 2. Dynamic Layout ---
-# Added $cmd_duration to show how long a command took
+# Ensure there is enough breathing room between segments
 format = """
 [](color_pink)\
 ${custom.env_tag}\
@@ -14,39 +14,33 @@ $directory\
 $git_branch\
 $git_status\
 [](fg:color_purple bg:color_gray)\
-$cpp\
-$java\
-$python\
-$golang\
-$rust\
-$nodejs\
+$cpp$java$python$golang$rust$nodejs\
 [](fg:color_gray bg:color_lavender)\
 $cmd_duration\
 [](fg:color_lavender)\
 \n$character"""
 
-# --- 3. Custom Color Palette ---
+# --- 3. Custom Color Palette (ANSI 218, 110, 177, 245) ---
 [palettes.soso_theme]
-color_pink = "#ca6fb9ff"     # ANSI 218: Pink
-color_blue = "#577899ff"     # ANSI 110: Blue
-color_purple = "#a761caff"   # ANSI 177: Purple
-color_gray = "#8A8A8A"     # ANSI 245: Gray
-color_lavender = "#D1D1F7" # For command duration
-color_text = "#303030"     # Dark gray text
+color_pink = "#ca6fb9"
+color_blue = "#577899"
+color_purple = "#a761ca"
+color_gray = "#8A8A8A"
+color_lavender = "#D1D1F7"
+color_text = "#FFFFFF"
 
 # --- 4. Base Modules ---
 [custom.env_tag]
-# Shows: User @ Environment (e.g., soso @ WSL2-PC)
-command = "echo $(whoami)@$ENV_TYPE" 
+# Explicitly use whoami and ENV_TYPE with a clean separator
+command = "echo $(whoami)@$ENV_TYPE"
 when = "true"
 style = "bg:color_pink fg:color_text"
+# Add a bit of padding [ space text space ] to prevent clipping
 format = "[ $output ]($style)"
 
 [directory]
 style = "bg:color_blue fg:color_text"
-# 'truncation_length = 0' shows the full path
 truncation_length = 0
-# 'truncate_to_repo = false' shows the path from root even inside git repos
 truncate_to_repo = false
 format = "[ $path ]($style)"
 
@@ -59,45 +53,44 @@ format = "[[ $symbol$branch ]($style)]($style)"
 style = "bg:color_purple fg:color_text"
 format = "[[($all_status$ahead_behind )]($style)]($style)"
 
-# --- 5. New Recommendation: Command Duration ---
-# Shows how long the previous command took if it's over 2s
+# --- 5. Language Modules (Ensuring no extra spaces) ---
+[cpp]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+[java]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+[python]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+[golang]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+[rust]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+[nodejs]
+symbol = " "
+style = "bg:color_gray fg:color_text"
+format = "[$symbol($version)]($style)"
+
+# --- 6. Command Duration ---
 [cmd_duration]
 min_time = 2000
 style = "bg:color_lavender fg:color_text"
 format = "[ ⏱ $duration ]($style)"
 
-# --- 6. Google Core Tech Stack (Gray Background) ---
-[cpp]
-symbol = " "
-style = "bg:color_gray fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
-[java]
-symbol = " "
-style = "bg:color_gray fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
-[python]
-symbol = " "
-style = "bg:color_gray fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
-[golang]
-symbol = " "
-style = "bg:color_lavender fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
-[rust]
-symbol = " "
-style = "bg:color_gray fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
-[nodejs]
-symbol = " "
-style = "bg:color_gray fg:color_text"
-format = '[ $symbol($version) ]($style)'
-
 # --- 7. Character Symbols ---
 [character]
-success_symbol = "[❯](bold color_pink)[❯](bold color_blue)[❯](bold color_purple)" 
+success_symbol = "[❯](bold color_pink)[❯](bold color_blue)[❯](bold color_purple)"
 error_symbol = "[❯](bold color_gray)[❯](bold color_gray)[❯](bold color_gray)"
