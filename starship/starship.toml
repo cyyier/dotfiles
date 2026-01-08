@@ -1,7 +1,11 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# --- 1. Dynamic Layout ---
-# Only includes Google core tech stack with strict Powerline segment logic
+# --- 1. Global Settings ---
+# Explicitly tell starship to use the custom palette defined below
+palette = "macaron"
+
+# --- 2. Dynamic Layout ---
+# Strictly ordered segments for a seamless Powerline look
 format = """
 [](color_sakura)\
 $custom[env_tag]\
@@ -20,25 +24,26 @@ $nodejs\
 [](fg:color_lavender)\
 \n$character"""
 
-# --- 2. Macaron Palette Definitions ---
-[palette]
-color_sakura = "#F4C2C2"   # Environment Tag
-color_mint = "#B2E2D4"     # Directory Path
-color_peach = "#FCE1B6"    # Git Status
-color_lavender = "#E6E6FA" # Google Tech Stack
-color_text = "#4A4A4A"     # Soft gray for better readability
+# --- 3. Macaron Palette Definitions ---
+[palettes.macaron]
+color_sakura = "#F4C2C2"   # Sakura Pink (Environment)
+color_mint = "#B2E2D4"     # Mint Green (Directory)
+color_peach = "#FCE1B6"    # Peach (Git)
+color_lavender = "#E6E6FA" # Lavender (Tech Stack)
+color_text = "#4A4A4A"     # Soft Gray text
 
-# --- 3. Base Modules ---
+# --- 4. Base Modules ---
 [custom.env_tag]
-variable = "ENV_TYPE"
-default = "🌸 gReach"
+# This dynamically displays the environment set in your zshrc
+command = "echo $ENV_TYPE" 
+when = "true"
 style = "bg:color_sakura fg:color_text"
 format = "[ $output ]($style)"
-when = "true"
 
 [directory]
 style = "bg:color_mint fg:color_text"
 format = "[ $path ]($style)"
+truncation_length = 3
 
 [git_branch]
 symbol = " "
@@ -49,38 +54,38 @@ format = "[[ $symbol$branch ]($style)]($style)"
 style = "bg:color_peach fg:color_text"
 format = "[[($all_status$ahead_behind )]($style)]($style)"
 
-# --- 4. Google Core Language Modules (Shared Lavender Background) ---
+# --- 5. Google Tech Stack (Shared Lavender Background) ---
 [cpp]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
 [java]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
 [python]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
 [golang]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
 [rust]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
 [nodejs]
 symbol = " "
 style = "bg:color_lavender fg:color_text"
-format = '[ $symbol ($version) ]($style)'
+format = '[ $symbol($version) ]($style)'
 
-# --- 5. Character Symbols ---
+# --- 6. Character Symbols ---
 [character]
 success_symbol = "[✨](bold #F8D6B3)"
 error_symbol = "[❌](bold #FFB7B2)"
