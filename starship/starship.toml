@@ -1,11 +1,10 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # --- 1. Global Settings ---
-# Use the professional soso_theme palette
 palette = "soso_theme"
 
 # --- 2. Dynamic Layout ---
-# Only includes Google core tech stack with strict Powerline segment logic
+# Added $cmd_duration to show how long a command took
 format = """
 [](color_pink)\
 ${custom.env_tag}\
@@ -21,29 +20,35 @@ $python\
 $golang\
 $rust\
 $nodejs\
-[](fg:color_gray)\
+[](fg:color_gray bg:color_lavender)\
+$cmd_duration\
+[](fg:color_lavender)\
 \n$character"""
 
-# --- 3. Custom Color Palette (Your favorites) ---
+# --- 3. Custom Color Palette ---
 [palettes.soso_theme]
-color_pink = "#FFAFAF"     # ANSI 218: Pink
-color_blue = "#87AFD7"     # ANSI 110: Blue
-color_purple = "#D787FF"   # ANSI 177: Purple
+color_pink = "#ca6fb9ff"     # ANSI 218: Pink
+color_blue = "#577899ff"     # ANSI 110: Blue
+color_purple = "#a761caff"   # ANSI 177: Purple
 color_gray = "#8A8A8A"     # ANSI 245: Gray
-color_text = "#303030"     # Dark gray for text readability
+color_lavender = "#D1D1F7" # For command duration
+color_text = "#303030"     # Dark gray text
 
 # --- 4. Base Modules ---
 [custom.env_tag]
-# This dynamically displays the environment set in your zshrc
-command = "echo $ENV_TYPE" 
+# Shows: User @ Environment (e.g., soso @ WSL2-PC)
+command = "echo $(whoami)@$ENV_TYPE" 
 when = "true"
 style = "bg:color_pink fg:color_text"
 format = "[ $output ]($style)"
 
 [directory]
 style = "bg:color_blue fg:color_text"
+# 'truncation_length = 0' shows the full path
+truncation_length = 0
+# 'truncate_to_repo = false' shows the path from root even inside git repos
+truncate_to_repo = false
 format = "[ $path ]($style)"
-truncation_length = 3
 
 [git_branch]
 symbol = " "
@@ -54,8 +59,14 @@ format = "[[ $symbol$branch ]($style)]($style)"
 style = "bg:color_purple fg:color_text"
 format = "[[($all_status$ahead_behind )]($style)]($style)"
 
-# --- 5. Google Core Language Modules (Shared Gray Background) ---
-# Using Gray (ANSI 245) for tech stack to keep it professional
+# --- 5. New Recommendation: Command Duration ---
+# Shows how long the previous command took if it's over 2s
+[cmd_duration]
+min_time = 2000
+style = "bg:color_lavender fg:color_text"
+format = "[ ⏱ $duration ]($style)"
+
+# --- 6. Google Core Tech Stack (Gray Background) ---
 [cpp]
 symbol = " "
 style = "bg:color_gray fg:color_text"
@@ -73,7 +84,7 @@ format = '[ $symbol($version) ]($style)'
 
 [golang]
 symbol = " "
-style = "bg:color_gray fg:color_text"
+style = "bg:color_lavender fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
 [rust]
@@ -86,9 +97,7 @@ symbol = " "
 style = "bg:color_gray fg:color_text"
 format = '[ $symbol($version) ]($style)'
 
-# --- 6. Prompt Character (Triple Gradient Arrows) ---
+# --- 7. Character Symbols ---
 [character]
-# Success: Pink, Blue, Purple gradient arrows
 success_symbol = "[❯](bold color_pink)[❯](bold color_blue)[❯](bold color_purple)" 
-# Error: Triple gray arrows to indicate failure
 error_symbol = "[❯](bold color_gray)[❯](bold color_gray)[❯](bold color_gray)"
