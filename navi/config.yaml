@@ -1,0 +1,14 @@
+# Navi configuration file
+
+style:
+  tag:
+    color: cyan
+  comment:
+    color: dim
+  snippet:
+    color: white
+
+cheats:
+  # This points to your custom cheats directory in dotfiles
+  paths:
+    - ~/dotfiles/cheats

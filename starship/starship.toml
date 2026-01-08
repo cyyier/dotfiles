@@ -1,0 +1,16 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+# Use custom format
+format = """
+[  Company SWE Environment ](bold blue) 
+$directory$git_branch$git_status
+[➜](bold green) """
+
+[directory]
+style = "bold cyan"
+truncation_length = 3
+fish_style_pwd_dir_length = 1
