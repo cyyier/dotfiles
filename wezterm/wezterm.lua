@@ -10,19 +10,25 @@ config.font = wezterm.font('MesloLGS NF', { weight = 'Regular' })
 config.font_size = 12.0
 
 -- --- 2. Background Image & Opacity ---
-config.window_background_opacity = 0.95
+config.window_background_opacity = 1
 
 config.background = {
     {
         source = {
             File = wezterm.home_dir .. '/dotfiles/assets/wallpapers/terminal_bg.png',
         },
-        opacity = 0.2,
+        opacity = 1,
         vertical_align = 'Middle',
         horizontal_align = 'Center',
         repeat_x = 'NoRepeat',
         repeat_y = 'NoRepeat',
-        hsb = { brightness = 0.5 },
+        hsb = { brightness = 0.2 },
+    },
+    {
+        source = { Color = '#181926' }, 
+        width = "100%",
+        height = "100%",
+        opacity = 0.6, 
     },
 }
 
