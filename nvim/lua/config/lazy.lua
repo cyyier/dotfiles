@@ -18,6 +18,11 @@ require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- Import Language Extras 
+    { import = "lazyvim.plugins.extras.lang.typescript" }, -- For React & JS/TS
+    { import = "lazyvim.plugins.extras.lang.python" },     -- For Lambda & PySpark
+    { import = "lazyvim.plugins.extras.lang.json" },       -- For configs
+    { import = "lazyvim.plugins.extras.formatting.prettier" }, -- Prettier for React
     -- import/override with your plugins
     { import = "plugins" },
   },
