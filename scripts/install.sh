@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Exit on any error
 set -e
 
 # --- Color Definitions ---
@@ -32,8 +31,8 @@ else
     echo -e "${BLUE}▶ Switched to: COMPANY/RESTRICTED Mode${NC}"
 fi
 
-# --- Environment Naming (For your soso❤tag prompt) ---
-echo -e "${YELLOW}Enter a nickname for this environment (e.g., WSL2, Google, MBP):${NC}"
+# --- Environment Naming ---
+echo -e "${YELLOW}Enter a nickname for this environment:${NC}"
 read -p "Environment Name: " ENV_NAME
 [[ -z "$ENV_NAME" ]] && ENV_NAME="Generic"
 echo "$ENV_NAME" > "$HOME/.env_name_tag"
@@ -41,15 +40,15 @@ echo -e "${GREEN}▶ Environment tagged as: $ENV_NAME${NC}"
 
 # --- 3. Stage 1: Symbolic Linking (Always Run) ---
 echo -e "\n${BLUE}Step 1: Syncing Configurations (Symlinks)...${NC}"
-mkdir -p "$CONFIG_DIR/navi" "$CONFIG_DIR/wezterm"
+mkdir -p "$CONFIG_DIR/navi" "$CONFIG_DIR/wezterm" "$CONFIG_DIR/tealdeer"
 
 declare -A LINKS=(
     ["$DOTFILES/zsh/zshrc"]="$HOME/.zshrc"
     ["$DOTFILES/starship/starship.toml"]="$CONFIG_DIR/starship.toml"
     ["$DOTFILES/nvim"]="$CONFIG_DIR/nvim"
     ["$DOTFILES/tmux/tmux.conf"]="$HOME/.tmux.conf"
-    ["$DOTFILES/navi/config.yaml"]="$CONFIG_DIR/navi/config.yaml"
     ["$DOTFILES/wezterm/wezterm.lua"]="$HOME/.wezterm.lua"
+    ["$DOTFILES/tealdeer/config.toml"]="$CONFIG_DIR/tealdeer/config.toml"
 )
 
 for src in "${!LINKS[@]}"; do
@@ -63,24 +62,34 @@ for src in "${!LINKS[@]}"; do
     fi
 done
 
-# --- 4. Stage 1.5: Plugin Managers (Always Run) ---
-# TPM is lightweight and essential for your Tmux macaron theme
+# --- 4. Stage 1.5: Lightweight Managers (Always Run) ---
 echo -e "\n${BLUE}Step 1.5: Checking Plugin Managers...${NC}"
 TPM_PATH="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM_PATH" ]; then
-    echo -e "  ${BLUE}▶${NC} Installing Tmux Plugin Manager (TPM)..."
-    git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_PATH" || echo "Git clone failed"
-else
-    echo -e "  ${GREEN}✓${NC} TPM already installed."
+    echo -e "  ${BLUE}▶${NC} Installing TPM..."
+    git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_PATH" || echo "Clone failed"
 fi
 
-# --- 5. Stage 2: Heavy Installation (Personal Mode Only) ---
-if [ "$IS_COMPANY" = false ]; then
-    echo -e "\n${BLUE}Step 2: Installing Tools (Personal Mode)...${NC}"
-    export PATH="$BIN_DIR:$PATH"
+# --- 5. Stage 1.6: tldr Check (Company Friendly) ---
+# We link the config above, so even system-installed tldr will look pretty
+if ! command -v tldr >/dev/null 2>&1; then
+    if [ "$IS_COMPANY" = false ]; then
+        echo -e "  ${BLUE}▶${NC} Installing tealdeer (tldr) for Personal mode..."
+        curl -LO https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-linux-x86_64-musl
+        chmod +x tealdeer-linux-x86_64-musl
+        mv tealdeer-linux-x86_64-musl "$BIN_DIR/tldr"
+        "$BIN_DIR/tldr" --update || true
+    else
+        echo -e "  ${YELLOW}!${NC} tldr not found. In Company mode, please use 'sudo apt install tldr' if allowed."
+    fi
+else
+    echo -e "  ${GREEN}✓${NC} tldr already available."
+fi
 
-    # Zsh
-    ! command -v zsh >/dev/null 2>&1 && sudo apt update && sudo apt install zsh -y
+# --- 6. Stage 2: Heavy Installation (Personal Mode Only) ---
+if [ "$IS_COMPANY" = false ]; then
+    echo -e "\n${BLUE}Step 2: Installing Heavy Tools (Personal Mode)...${NC}"
+    export PATH="$BIN_DIR:$PATH"
     
     # Starship
     ! command -v starship >/dev/null 2>&1 && curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$BIN_DIR" -y
@@ -91,21 +100,10 @@ if [ "$IS_COMPANY" = false ]; then
         chmod u+x nvim.appimage && mv nvim.appimage "$BIN_DIR/nvim"
     fi
 
-    # Oh My Zsh & Plugins
-    [[ ! -d "$HOME/.oh-my-zsh" ]] && git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
+    # Oh My Zsh Plugins
     ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
     [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]] && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
     [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]] && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# --- 6. Final Health Check ---
-echo -e "\n${BLUE}==========================================${NC}"
-echo -e "${BLUE}🔎  Environment Health Check Report${NC}"
-echo -e "${BLUE}==========================================${NC}"
-command -v starship >/dev/null 2>&1 && echo -e "  Starship UI    : ${GREEN}Ready${NC}" || echo -e "  Starship UI    : ${RED}Missing${NC}"
-command -v nvim >/dev/null 2>&1 && echo -e "  Neovim         : ${GREEN}Ready${NC}" || echo -e "  Neovim         : ${RED}Missing${NC}"
-[ -d "$TPM_PATH" ] && echo -e "  Tmux Plugins   : ${GREEN}Ready${NC}" || echo -e "  Tmux Plugins   : ${RED}Missing${NC}"
-echo -e "${BLUE}==========================================${NC}"
-
-echo -e "\n${GREEN}✨ Setup Complete! Happy Coding!${NC}"
-echo -e "${YELLOW}Tip: In Tmux, press 'prefix + I' to fetch plugins.${NC}\n"
+echo -e "\n${GREEN}✨ Setup Complete! Happy Coding!${NC}\n"
