@@ -6,6 +6,7 @@
 export PATH="$HOME/.local/bin:$PATH"
 export ZSH="$HOME/.oh-my-zsh"
 
+
 ZSH_THEME=""
 
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
@@ -17,14 +18,22 @@ source ~/dotfiles/shell/aliases.sh
 ECHO_PINK="\e[38;5;218m"
 ECHO_RESET="\e[0m"
 
+# Read custom environment name if it exists
+if [[ -f "$HOME/.env_name_tag" ]]; then
+    export ENV_TYPE=$(cat "$HOME/.env_name_tag")
+else
+    export ENV_TYPE="Default"
+fi
+
+
+
 print
 print "  ✧( •̀ ω •́ )      ( •̀ ω •́ )✧"
 print "  ───────────────────────────"
-print "     ${ECHO_PINK}welcome back, soso 🌸${ECHO_RESET}"
+print "${ECHO_PINK}welcome back to $ENV_TYPE, soso 🌸${ECHO_RESET}"
 print
 
 eval "$(starship init zsh)"
-
 
 
 # # only interactive

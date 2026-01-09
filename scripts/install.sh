@@ -31,6 +31,19 @@ else
     echo -e "${BLUE}▶ Switched to: COMPANY/RESTRICTED Mode${NC}"
 fi
 
+# --- Environment Naming ---
+echo -e "${YELLOW}Enter a nickname for this environment (e.g., WSL2, Google, MBP):${NC}"
+read -p "Environment Name: " ENV_NAME
+
+# If input is empty, set a default
+if [[ -z "$ENV_NAME" ]]; then
+    ENV_NAME="Generic"
+fi
+
+# Save the name to a hidden file
+echo "$ENV_NAME" > "$HOME/.env_name_tag"
+echo -e "${GREEN}▶ Environment tagged as: $ENV_NAME${NC}"
+
 # --- 3. Stage 1: Symbolic Linking (Always Run) ---
 echo -e "\n${BLUE}Step 1: Syncing Configurations (Symlinks)...${NC}"
 mkdir -p "$CONFIG_DIR/navi"
