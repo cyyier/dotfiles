@@ -28,9 +28,9 @@ fi
 
 
 print
-print "  ✧( •̀ ω •́ )      ( •̀ ω •́ )✧"
-print "  ───────────────────────────"
-print "${ECHO_PINK}welcome back to $ENV_TYPE, soso 🌸${ECHO_RESET}"
+print "   ✧( •̀ ω •́ ) Happy coding  ( •̀ ω •́ )✧" 
+print "───────────────────────────────────────────"
+print "${ECHO_PINK}Welcome back to your $ENV_TYPE, soso 🌸${ECHO_RESET}"
 print
 
 eval "$(starship init zsh)"

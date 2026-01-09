@@ -26,13 +26,13 @@ color_pink = "#ca6fb9"
 color_blue = "#577899"
 color_purple = "#a761ca"
 color_gray = "#8A8A8A"
-color_lavender = "#D1D1F7"
+color_lavender = "#5d5d94"
 color_text = "#FFFFFF"
 
 # --- 4. Base Modules ---
 [custom.env_tag]
 # Explicitly use whoami and ENV_TYPE with a clean separator
-command = "echo $(whoami)@$ENV_TYPE"
+command = "echo ❤$(whoami)❤$ENV_TYPE"
 when = "true"
 style = "bg:color_pink fg:color_text"
 # Add a bit of padding [ space text space ] to prevent clipping
