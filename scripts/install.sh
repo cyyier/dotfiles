@@ -1,27 +1,31 @@
 #!/usr/bin/env bash
+# Exit immediately if a command exits with a non-zero status
 set -e
 
-# --- Color Definitions ---
+# --- Color Definitions for Feedback ---
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
 echo -e "${BLUE}🚀 Initializing dotfiles environment for soso...${NC}"
 
-# --- 1. Paths and Directories ---
+# --- 1. Path Configurations ---
+# Define core directories for dotfiles, binaries, and configurations
 DOTFILES="$HOME/dotfiles"
 BIN_DIR="$HOME/.local/bin"
 CONFIG_DIR="$HOME/.config"
-mkdir -p "$BIN_DIR" "$CONFIG_DIR"
+DIST_DIR="$HOME/.local/share" # Directory for unpacked software distributions
 
-# --- 2. Environment Selection ---
+# Ensure all required directories exist
+mkdir -p "$BIN_DIR" "$CONFIG_DIR" "$DIST_DIR"
+
+# --- 2. Environment Selection Logic ---
+# Default to Company mode for safety
 IS_COMPANY=true
 echo -e "${YELLOW}Select your environment (Auto-select Company Mode in 5s):${NC}"
-echo -e "1) Company Environment  (Restricted: Symlinks & Plugin managers only)"
-echo -e "2) Personal/WSL2         (Full: Auto-install binaries and heavy tools)"
-read -t 5 -p "Selection [1]: " USER_INPUT || USER_INPUT="1"
+read -t 5 -p "1) Company  2) Personal [Default 1]: " USER_INPUT || USER_INPUT="1"
 
 if [[ "$USER_INPUT" == "2" ]]; then
     IS_COMPANY=false
@@ -31,17 +35,51 @@ else
     echo -e "${BLUE}▶ Switched to: COMPANY/RESTRICTED Mode${NC}"
 fi
 
-# --- Environment Naming ---
-echo -e "${YELLOW}Enter a nickname for this environment:${NC}"
-read -p "Environment Name: " ENV_NAME
-[[ -z "$ENV_NAME" ]] && ENV_NAME="Generic"
-echo "$ENV_NAME" > "$HOME/.env_name_tag"
-echo -e "${GREEN}▶ Environment tagged as: $ENV_NAME${NC}"
+# --- 3. Identity & Machine Naming ---
+# Use system hostname as default, allow user override
+CURRENT_HOSTNAME=$(hostname)
+echo -e "\n${YELLOW}Identifying this machine...${NC}"
+echo -e "Default name is: ${BLUE}$CURRENT_HOSTNAME${NC}"
+read -t 10 -p "Enter a nickname for this environment (or press Enter to keep): " CUSTOM_NAME || CUSTOM_NAME=""
 
-# --- 3. Stage 1: Symbolic Linking (Always Run) ---
+# Fallback to hostname if input is empty
+FINAL_NAME="${CUSTOM_NAME:-$CURRENT_HOSTNAME}"
+echo "$FINAL_NAME" > "$HOME/.env_name_tag"
+echo -e "${GREEN}▶ Environment tagged as: $FINAL_NAME${NC}"
+
+# --- 4. Smart Installation Helper Function ---
+# Checks if command exists; if not and in Personal mode, downloads binary
+# Arguments: 1:cmd_name, 2:download_url, 3:install_type(tar|direct)
+smart_install() {
+    local cmd=$1
+    local url=$2
+    local type=$3
+
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo -e "  ${GREEN}✓${NC} $cmd already exists in PATH."
+    elif [ "$IS_COMPANY" = false ]; then
+        echo -e "  ${BLUE}▶${NC} Installing $cmd..."
+        if [ "$type" == "tar" ]; then
+            # Download and unpack tarballs
+            curl -L -f -o "$HOME/temp.tar.gz" "$url"
+            mkdir -p "$DIST_DIR/${cmd}-dist"
+            tar xzf "$HOME/temp.tar.gz" -C "$DIST_DIR/${cmd}-dist" --strip-components=1
+            ln -sf "$DIST_DIR/${cmd}-dist/bin/$cmd" "$BIN_DIR/$cmd"
+            rm "$HOME/temp.tar.gz"
+        else
+            # Download standalone binaries directly
+            curl -L -f -o "$BIN_DIR/$cmd" "$url"
+            chmod +x "$BIN_DIR/$cmd"
+        fi
+        echo -e "  ${GREEN}✓${NC} $cmd installed successfully to $BIN_DIR"
+    else
+        echo -e "  ${YELLOW}!${NC} $cmd missing. Skipping binary install in Company Mode."
+    fi
+}
+
+# --- 5. Symbolic Linking (Configuration Sync) ---
+# Configurations are safe to link in both environments
 echo -e "\n${BLUE}Step 1: Syncing Configurations (Symlinks)...${NC}"
-mkdir -p "$CONFIG_DIR/navi" "$CONFIG_DIR/wezterm" "$CONFIG_DIR/tealdeer"
-
 declare -A LINKS=(
     ["$DOTFILES/zsh/zshrc"]="$HOME/.zshrc"
     ["$DOTFILES/starship/starship.toml"]="$CONFIG_DIR/starship.toml"
@@ -54,7 +92,9 @@ declare -A LINKS=(
 for src in "${!LINKS[@]}"; do
     dest="${LINKS[$src]}"
     if [ -e "$src" ]; then
-        if [ -d "$dest" ] && [ ! -L "$dest" ]; then rm -rf "$dest"; else rm -f "$dest"; fi
+        # Ensure parent directory exists for the destination
+        mkdir -p "$(dirname "$dest")"
+        # Force symbolic link creation (overwrite existing)
         ln -sfn "$src" "$dest"
         echo -e "  ${GREEN}✓${NC} Linked $(basename "$src")"
     else
@@ -62,48 +102,40 @@ for src in "${!LINKS[@]}"; do
     fi
 done
 
-# --- 4. Stage 1.5: Lightweight Managers (Always Run) ---
-echo -e "\n${BLUE}Step 1.5: Checking Plugin Managers...${NC}"
+# --- 6. Software Installation Stage ---
+echo -e "\n${BLUE}Step 2: Smart Tool Installation Check...${NC}"
+
+# Neovim: Latest stable v0.11.5
+smart_install "nvim" "https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-x86_64.tar.gz" "tar"
+
+# Tealdeer (tldr): Rust implementation of tldr
+smart_install "tldr" "https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-linux-x86_64-musl" "direct"
+
+# Starship: Cross-shell prompt
+if ! command -v starship >/dev/null 2>&1 && [ "$IS_COMPANY" = false ]; then
+    echo -e "  ${BLUE}▶${NC} Installing Starship..."
+    curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$BIN_DIR" -y
+fi
+
+# --- 7. Plugin Management ---
+echo -e "\n${BLUE}Step 3: Checking Plugin Managers & Add-ons...${NC}"
+
+# TPM (Tmux Plugin Manager)
 TPM_PATH="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM_PATH" ]; then
-    echo -e "  ${BLUE}▶${NC} Installing TPM..."
-    git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_PATH" || echo "Clone failed"
+    echo -e "  ${BLUE}▶${NC} Cloning TPM..."
+    git clone --depth=1 https://github.com/tmux-plugins/tpm "$TPM_PATH"
 fi
 
-# --- 5. Stage 1.6: tldr Check (Company Friendly) ---
-# We link the config above, so even system-installed tldr will look pretty
-if ! command -v tldr >/dev/null 2>&1; then
-    if [ "$IS_COMPANY" = false ]; then
-        echo -e "  ${BLUE}▶${NC} Installing tealdeer (tldr) for Personal mode..."
-        curl -LO https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-linux-x86_64-musl
-        chmod +x tealdeer-linux-x86_64-musl
-        mv tealdeer-linux-x86_64-musl "$BIN_DIR/tldr"
-        "$BIN_DIR/tldr" --update || true
-    else
-        echo -e "  ${YELLOW}!${NC} tldr not found. In Company mode, please use 'sudo apt install tldr' if allowed."
-    fi
-else
-    echo -e "  ${GREEN}✓${NC} tldr already available."
+# Oh My Zsh Plugins (Auto-suggestions & Syntax Highlighting)
+ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    # Clone productivity plugins if Oh My Zsh is present
+    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]] && \
+        git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]] && \
+        git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# --- 6. Stage 2: Heavy Installation (Personal Mode Only) ---
-if [ "$IS_COMPANY" = false ]; then
-    echo -e "\n${BLUE}Step 2: Installing Heavy Tools (Personal Mode)...${NC}"
-    export PATH="$BIN_DIR:$PATH"
-    
-    # Starship
-    ! command -v starship >/dev/null 2>&1 && curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$BIN_DIR" -y
-
-    # Neovim (AppImage)
-    if ! command -v nvim >/dev/null 2>&1; then
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-        chmod u+x nvim.appimage && mv nvim.appimage "$BIN_DIR/nvim"
-    fi
-
-    # Oh My Zsh Plugins
-    ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]] && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-    [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]] && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-fi
-
-echo -e "\n${GREEN}✨ Setup Complete! Happy Coding!${NC}\n"
+echo -e "\n${GREEN}✨ Setup Complete for environment: $FINAL_NAME${NC}"
+echo -e "${YELLOW}Note: Restart your shell or run 'source ~/.zshrc' to apply changes.${NC}\n"
