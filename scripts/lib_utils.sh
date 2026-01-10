@@ -15,3 +15,20 @@ export CONFIG_DIR="$HOME/.config"
 
 # Ensure basic directories exist
 mkdir -p "$BIN_DIR" "$CONFIG_DIR"
+
+# --- Helper Functions ---
+function section() {
+    echo -e "\n${BLUE}=== $1 ===${NC}"
+}
+
+function success() {
+    echo -e "  ${GREEN}✓ $1${NC}"
+}
+
+function info() {
+    echo -e "  ${BLUE}ℹ $1${NC}"
+}
+
+function warn() {
+    echo -e "  ${YELLOW}⚠ $1${NC}"
+}

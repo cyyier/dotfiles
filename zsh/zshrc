@@ -25,6 +25,20 @@ else
     export ENV_TYPE="Default"
 fi
 
+# --- Productivity Tools Config ---
+
+# 1. Zoxide (Better cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  alias cd="z" 
+fi
+
+# 2. FZF Configuration
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# 3. FZF + Ripgrep Integration
+# Use rg to search files (ignores .git, respects .gitignore, includes hidden files)
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 
 
 print

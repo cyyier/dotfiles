@@ -14,6 +14,7 @@ echo -e "${BLUE}🚀 Initializing dotfiles environment for soso...${NC}"
 source "${SCRIPTS_DIR}/env_setup.sh"
 source "${SCRIPTS_DIR}/link_configs.sh"
 source "${SCRIPTS_DIR}/install_binaries.sh"
+source "${SCRIPTS_DIR}/30-productivity.sh"
 
 # --- Final Environment Health Check ---
 echo -e "\n${BLUE}==========================================${NC}"
