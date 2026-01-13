@@ -49,10 +49,9 @@ Custom workflows defined in `shell/aliases.sh`:
 ### Knowledge Management
 | Command | Description |
 | :--- | :--- |
-| `??` | **Interactive Search**: Uses `fzf` to search your cheatsheets (`~/.my_cheats`). |
-| `note <text>` | **Quick Record**: Appends a note to your cheatsheet file. |
-| `qs <query>` | **Quick Search**: Greps through your notes. |
-| `qe` | **Quick Edit**: Opens your cheatsheet file in Vim. |
+| `??` | **Interactive Search**: Launches `navi` to browse and execute cheats. |
+| `qs <query>` | **Quick Search**: Queries `navi` directly with the provided text. |
+| `qe` | **Quick Edit**: Opens your custom cheatsheet (`.cheat`) in Vim. |
 
 ### Navigation & Git
 | Alias | Command | Description |

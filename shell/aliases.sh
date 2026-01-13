@@ -32,22 +32,16 @@ alias j='jobs'
 
 # --- Search Utils ---
 
-# [??] Interactive Search (The soul search)
-alias "??"="cat ~/.my_cheats | fzf --height 40% --layout=reverse --border --prompt='🤔 How to: '"
+# [??] Interactive Search (Powered by Navi)
+alias "??"="navi"
 
-# [qs] Quick Search
+# [qs] Quick Search (Navi query)
 qs() {
-    grep -i "@$1" ~/.my_cheats
+    navi --query "$*"
 }
 
-# [note] Quick Record (No quotes needed)
-note() {
-    echo "# @$*" >> ~/.my_cheats
-    echo "✅ Knowledge captured: $*"
-}
-
-# [qe] Quick Edit
-alias qe="vim ~/.my_cheats"
+# [qe] Quick Edit (Edit your custom cheats)
+alias qe="vim ~/dotfiles/cheats/my_cheats.cheat"
 
 # --- Suffix Aliases (Zsh Only) ---
 if [[ -n "$ZSH_VERSION" ]]; then

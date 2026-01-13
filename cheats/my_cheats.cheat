@@ -1,0 +1,194 @@
+% fs
+# Remove with confirmation
+rm -i
+
+# Copy with confirmation
+cp -i
+
+# Move with confirmation
+mv -i
+
+# Recursive mkdir
+mkdir -p
+
+% ls
+# List all files with details
+ls -alF
+
+# List all except . and ..
+ls -A
+
+# Column view
+ls -CF
+
+% nav
+# Go up 1 level
+cd ..
+
+# Go up 2 levels
+cd ../..
+
+% shell
+# Clear screen
+cls
+
+# Command history
+history
+
+# Show background jobs
+jobs
+
+# Silence stderr
+2>/dev/null
+
+% proc
+# Find PID and full command
+pgrep -af <name>
+
+# Kill by process pattern
+pkill -f <pattern>
+
+# Check if PID exists
+kill -0 <PID>
+
+% git
+# Show repo status
+git status
+
+# Stage all changes
+git add .
+
+# Commit with message
+git commit -m "<msg>"
+
+# Switch branches
+git checkout
+
+# Visual log
+git log --oneline --graph --decorate
+
+# List branches
+git branch
+
+# Show remote URLs
+git remote -v
+
+# Detailed remote info
+git remote show origin
+
+# Sync and clean stale branches
+git fetch --all --prune
+
+% ssh
+# Login with custom port
+ssh -p <port> <user>@<host>
+
+# Local port forward
+ssh -L <L_port>:127.0.0.1:<R_port>
+
+# Background SSH tunnel
+ssh -f -N -L <L_port>:127.0.0.1:<R_port>
+
+% py
+# One-liner HTTP server
+python3 -m http.server 8888
+
+% vim
+# Search forward
+/word
+
+# Next / Previous match
+n / N
+
+# Clear search highlight
+:noh
+
+% tmux
+# List sessions
+tmux ls
+
+# Attach to session
+tmux attach -t <name>
+
+# Detach session
+Ctrl-b d
+
+# Split V / H
+Ctrl-b % / "
+
+# Navigate panes
+Ctrl-b arrows
+
+# New window
+Ctrl-b c
+
+# Rename window
+Ctrl-b ,
+
+% find
+# Faster, user-friendly find
+fd <pattern>
+
+# Find by extension (py, sql, etc.)
+fd -e <ext>
+
+# Execute command on results
+fd -x <cmd>
+
+# Exclude directory (dist, node_modules)
+fd -E <dir>
+
+% grep
+# Recursive case-insensitive search
+grep -rin "<pattern>" .
+
+# Inverse match (exclude)
+grep -v "<pattern>"
+
+# Faster, user-friendly grep (ripgrep)
+rg "<pattern>"
+
+# Search in specific file types
+rg -t <type> "<pattern>"
+
+# Show context (n lines before/after)
+rg -C <n> "<pattern>"
+
+# List only filenames with matches
+rg -l "<pattern>"
+
+# Case-insensitive search
+rg -i "<pattern>"
+
+% docker
+# List all containers
+docker ps -a
+
+# Enter container shell
+docker exec -it <id> bash
+
+# Tail container logs
+docker logs -f --tail 100 <id>
+
+# Remove unused data
+docker system prune -a
+
+% sysd
+# Check service status
+systemctl status <name>
+
+# Restart service
+sudo systemctl restart <name>
+
+# Follow service logs
+journalctl -u <name> -f
+
+% net
+# Find process on port
+lsof -i :<port>
+
+# List listening ports
+netstat -tulnp
+
+# Show HTTP headers only
+curl -I <url>
