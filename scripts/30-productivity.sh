@@ -76,3 +76,17 @@ else
         warn "fd not found."
     fi
 fi
+
+# --- 5. Navi (Interactive Cheatsheet) ---
+# Allows you to browse cheatsheets and execute commands.
+if command -v navi >/dev/null 2>&1; then
+    success "navi is already installed."
+else
+    if [ "$IS_COMPANY" = false ]; then
+        info "Installing navi..."
+        bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
+        success "navi installed."
+    else
+        warn "navi not found. In Company Mode, install manually."
+    fi
+fi

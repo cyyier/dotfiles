@@ -34,6 +34,7 @@ These are installed via `scripts/30-productivity.sh`:
 *   **Zoxide**: A smarter `cd` command that remembers which directories you use most frequently.
 *   **Ripgrep (rg)**: Line-oriented search tool that recursively searches the current directory (faster than grep).
 *   **FD**: A simple, fast, and user-friendly alternative to `find`.
+*   **Navi**: An interactive cheatsheet tool for the command-line.
 
 ### Neovim Plugins (LazyVim)
 Managed via `lazy.nvim`. Key plugins include:
