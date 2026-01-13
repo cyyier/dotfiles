@@ -4,7 +4,7 @@ style:
   tag:
     color: cyan
   comment:
-    color: dim
+    color: blue
   snippet:
     color: white
 
