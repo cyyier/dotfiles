@@ -3,6 +3,7 @@
 # --- Stage 1: Symbolic Linking ---
 echo -e "\n${BLUE}Step 1: Syncing Configurations (Symlinks)...${NC}"
 mkdir -p "$CONFIG_DIR/navi"
+mkdir -p "$HOME/.local/share/navi/cheats"
 
 declare -A LINKS=(
     ["$DOTFILES/zsh/zshrc"]="$HOME/.zshrc"
@@ -10,6 +11,7 @@ declare -A LINKS=(
     ["$DOTFILES/nvim"]="$CONFIG_DIR/nvim"
     ["$DOTFILES/tmux/tmux.conf"]="$HOME/.tmux.conf"
     ["$DOTFILES/navi/config.yaml"]="$CONFIG_DIR/navi/config.yaml"
+    ["$DOTFILES/cheats/my_cheats.sh"]="$HOME/.local/share/navi/cheats/my_cheats.sh"
 )
 
 for src in "${!LINKS[@]}"; do

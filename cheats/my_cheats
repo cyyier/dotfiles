@@ -37,8 +37,17 @@
 # @tmux  | Ctrl-b arrows                | Navigate panes
 # @tmux  | Ctrl-b c                     | New window
 # @tmux  | Ctrl-b ,                     | Rename window
+# @find  | fd <pattern>                 | Faster, user-friendly find
+# @find  | fd -e <ext>                  | Find by extension (py, sql, etc.)
+# @find  | fd -x <cmd>                  | Execute command on results
+# @find  | fd -E <dir>                  | Exclude directory (dist, node_modules)
 # @grep  | grep -rin "pattern" .        | Recursive case-insensitive search
 # @grep  | grep -v "pattern"            | Inverse match (exclude)
+# @grep  | rg "pattern"                 | Faster, user-friendly grep (ripgrep)
+# @grep  | rg -t <type> "pattern"       | Search in specific file types
+# @grep  | rg -C <n> "pattern"          | Show context (n lines before/after)
+# @grep  | rg -l "pattern"              | List only filenames with matches
+# @grep  | rg -i "pattern"              | Case-insensitive search
 # @docker| docker ps -a                 | List all containers
 # @docker| docker exec -it <id> bash    | Enter container shell
 # @docker| docker logs -f --tail 100 <id>| Tail container logs
