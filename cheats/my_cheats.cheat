@@ -1,194 +1,63 @@
-% fs
-# Remove with confirmation
-rm -i
+% nav, navigation
 
-# Copy with confirmation
-cp -i
+# 智能预览并选择最近路径 | Select from frecency list
+z <frequent_paths>
 
-# Move with confirmation
-mv -i
+# 搜索并跳转到 React 项目根目录 | Jump to React project
+z $(fd -t d "src" --max-depth 3 | xargs dirname | fzf)
 
-# Recursive mkdir
-mkdir -p
+$ frequent_paths: zoxide query -l --- --preview 'ls -CF {}'
 
-% ls
-# List all files with details
-ls -alF
+% py, python
 
-# List all except . and ..
-ls -A
+# 开启自定义端口的 HTTP 服务器 | HTTP server with custom port
+python3 -m http.server <port>
 
-# Column view
-ls -CF
+# 搜索并执行数据修复脚本 | Search & Run Data Script
+python3 <scripts>
 
-% nav
-# Go up 1 level
-cd ..
+$ port: echo '8888 8000 3000' | tr ' ' '\n'
+$ scripts: fd -e py . --- --preview 'bat --color=always {}'
 
-# Go up 2 levels
-cd ../..
+% git, version-control
 
-% shell
-# Clear screen
-cls
+# 选择分支并切换 | Switch branches (fzf)
+git checkout <branch>
 
-# Command history
-history
+# 以当前时间快速提交 | Fast commit with msg
+git commit -m "<msg> (<date>)"
 
-# Show background jobs
-jobs
+# 搜索历史 Commit 信息 | Search commit messages
+git log --oneline | fzf | awk '{print $1}' | xargs git show
 
-# Silence stderr
-2>/dev/null
+$ branch: git branch | fzf | sed 's/* //g'
+$ date: date +%Y-%m-%d
 
-% proc
-# Find PID and full command
-pgrep -af <name>
+% ssh, network
 
-# Kill by process pattern
-pkill -f <pattern>
+# 动态隧道：本地转发 | Local port forward
+ssh -L <L_port>:127.0.0.1:<R_port> <user>@<host>
 
-# Check if PID exists
-kill -0 <PID>
-
-% git
-# Show repo status
-git status
-
-# Stage all changes
-git add .
-
-# Commit with message
-git commit -m "<msg>"
-
-# Switch branches
-git checkout
-
-# Visual log
-git log --oneline --graph --decorate
-
-# List branches
-git branch
-
-# Show remote URLs
-git remote -v
-
-# Detailed remote info
-git remote show origin
-
-# Sync and clean stale branches
-git fetch --all --prune
-
-% ssh
-# Login with custom port
-ssh -p <port> <user>@<host>
-
-# Local port forward
-ssh -L <L_port>:127.0.0.1:<R_port>
-
-# Background SSH tunnel
-ssh -f -N -L <L_port>:127.0.0.1:<R_port>
-
-% py
-# One-liner HTTP server
-python3 -m http.server 8888
-
-% vim
-# Search forward
-/word
-
-# Next / Previous match
-n / N
-
-# Clear search highlight
-:noh
-
-% tmux
-# List sessions
-tmux ls
-
-# Attach to session
-tmux attach -t <name>
-
-# Detach session
-Ctrl-b d
-
-# Split V / H
-Ctrl-b % / "
-
-# Navigate panes
-Ctrl-b arrows
-
-# New window
-Ctrl-b c
-
-# Rename window
-Ctrl-b ,
-
-% find
-# Faster, user-friendly find
-fd <pattern>
-
-# Find by extension (py, sql, etc.)
-fd -e <ext>
-
-# Execute command on results
-fd -x <cmd>
-
-# Exclude directory (dist, node_modules)
-fd -E <dir>
-
-% grep
-# Recursive case-insensitive search
-grep -rin "<pattern>" .
-
-# Inverse match (exclude)
-grep -v "<pattern>"
-
-# Faster, user-friendly grep (ripgrep)
-rg "<pattern>"
-
-# Search in specific file types
-rg -t <type> "<pattern>"
-
-# Show context (n lines before/after)
-rg -C <n> "<pattern>"
-
-# List only filenames with matches
-rg -l "<pattern>"
-
-# Case-insensitive search
-rg -i "<pattern>"
-
-% docker
-# List all containers
-docker ps -a
-
-# Enter container shell
-docker exec -it <id> bash
-
-# Tail container logs
-docker logs -f --tail 100 <id>
-
-# Remove unused data
-docker system prune -a
-
-% sysd
-# Check service status
-systemctl status <name>
-
-# Restart service
-sudo systemctl restart <name>
-
-# Follow service logs
-journalctl -u <name> -f
-
-% net
-# Find process on port
+# 查看特定端口的进程详情 | Find process on port
 lsof -i :<port>
 
-# List listening ports
-netstat -tulnp
+$ port: netstat -tulnp | awk '{print $4}' | grep -o '[0-9]*$' | sort -u
 
-# Show HTTP headers only
-curl -I <url>
+% docker, container
+
+# 选择运行中的容器进入 Shell | Enter container shell
+docker exec -it <running_containers> bash
+
+# 追踪选定容器的日志 | Tail container logs
+docker logs -f --tail 100 <all_containers>
+
+$ running_containers: docker ps --format '{{.ID}}\t{{.Names}}' | fzf | awk '{print $1}'
+$ all_containers: docker ps -a --format '{{.ID}}\t{{.Names}}' | fzf | awk '{print $1}'
+
+% google, sre
+
+# 查找当前目录下超大文件 (前10) | Find top 10 large files
+fd -t f -S +100M -x ls -lh {} | sort -k 5 -hr | head -n 10
+
+# 搜索包含关键字的配置文件并预览 | Search configs
+fd -e yaml -e json -e conf | fzf --preview 'bat --color=always {}'
