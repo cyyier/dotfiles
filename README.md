@@ -6,7 +6,7 @@ My personal configuration files and setup scripts, designed for flexibility acro
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
+    git clone https://github.com/cyyier/dotfiles.git ~/dotfiles
     cd ~/dotfiles
     ```
 
